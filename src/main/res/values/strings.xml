@@ -13,4 +13,7 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="event_default_name">Defailt Event Name</string>
+    <string name="event_default_desc">Defailt Event Desc</string>
 </resources>

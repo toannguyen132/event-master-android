@@ -17,11 +17,12 @@ import java.util.List;
 import project.com.eventmaster.R;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.Image;
+import project.com.eventmaster.utils.ActivityHelper;
 import project.com.eventmaster.utils.DisplayHelper;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> {
 
-    List<Event> events;
+    private List<Event> events;
 
     public EventAdapter(List<Event> events) {
         this.events = events;
@@ -47,8 +48,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
         Image image = event.getImages().get(0);
         viewHolder.textEventName.setText(event.getName());
         if (image != null) {
-            Picasso.with( viewHolder.context ).load(DisplayHelper.getInstance().imageUri(image.getFilename())).into(viewHolder.imgThumb);
+            Picasso.get().load(DisplayHelper.getInstance().imageUri(image.getFilename())).into(viewHolder.imgThumb);
         }
+
+        /** open detail view **/
+        View view = viewHolder.view;
+        view.setOnClickListener(view1 -> ActivityHelper.getInstance().openEventDetail(view1.getContext(), event));
     }
 
     @Override
@@ -61,13 +66,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textEventName;
-        ImageView imgThumb;
-        Context context;
+        private TextView textEventName;
+        private ImageView imgThumb;
+        private Context context;
+        private View view;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             context = itemView.getContext();
+
+            view = itemView;
             textEventName = itemView.findViewById(R.id.txt_event_name);
             imgThumb = itemView.findViewById(R.id.img_event_thumb);
             imgThumb.setImageResource(R.drawable.splash);

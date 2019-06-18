@@ -1,11 +1,15 @@
 package project.com.eventmaster.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Event {
+public class Event  {
 
     @SerializedName("id")
     @Expose
@@ -124,6 +128,13 @@ public class Event {
 
     public List<Image> getImages() {
         return images;
+    }
+
+    public Image getImage() {
+        if (images != null && images.size() > 0) {
+            return images.get(0);
+        }
+        return null;
     }
 
     public void setImages(List<Image> images) {
