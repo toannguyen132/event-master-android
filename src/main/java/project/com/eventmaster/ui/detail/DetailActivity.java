@@ -4,10 +4,14 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Display;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
@@ -20,7 +24,7 @@ public class DetailActivity extends AppCompatActivity {
 
     DetailViewModel viewModel;
     ImageView viewImage;
-    TextView viewTitle, viewDesc;
+    TextView viewTitle, viewDesc, viewLocation, viewDate;
 
     Context context;
 
@@ -29,10 +33,18 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        // enable back button
+        ActionBar bar = getSupportActionBar();
+        bar.setDisplayHomeAsUpEnabled(true);
+        bar.setDisplayShowHomeEnabled(true);
+
+
         // setup resource
         viewImage = findViewById(R.id.detail_event_image);
         viewTitle = findViewById(R.id.detail_event_name);
         viewDesc = findViewById(R.id.detail_event_desc);
+        viewLocation = findViewById(R.id.detail_event_location);
+        viewDate = findViewById(R.id.detail_event_date);
 
         // retrieve data
         Gson gson = new Gson();
@@ -44,7 +56,7 @@ public class DetailActivity extends AppCompatActivity {
 
         context = this;
 
-        // bind data
+        // bind datar
         viewModel.getEvent().observe(this, new Observer<Event>() {
             @Override
             public void onChanged(@Nullable Event event) {
@@ -57,10 +69,21 @@ public class DetailActivity extends AppCompatActivity {
                         .into(viewImage);
                 viewTitle.setText(event.getName());
                 viewDesc.setText(event.getDescription());
+                viewDate.setText(DisplayHelper.getInstance().dateFormat(event.getStartDate()));
+                viewLocation.setText(event.getLocation());
             }
         });
 
         // set default event
         viewModel.setEvent(event);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1,7 +1,9 @@
 package project.com.eventmaster.ui.splash;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -14,6 +16,9 @@ import project.com.eventmaster.utils.GlobalContext;
 import project.com.eventmaster.utils.TokenHelper;
 
 public class SplashActivity extends AppCompatActivity {
+
+    final static int LOGIN_REQUEST = 1;
+    final static int MAIN_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +61,25 @@ public class SplashActivity extends AppCompatActivity {
 
     private void moveToLogin() {
         Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, LOGIN_REQUEST);
     }
 
     private void moveToMain() {
         Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, MAIN_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_REQUEST ) {
+            if (resultCode == Activity.RESULT_OK)
+                moveToMain();
+            else
+                moveToLogin();
+        }
+        if (requestCode == MAIN_REQUEST) {
+            moveToLogin();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package project.com.eventmaster.ui.fragments.eventlist;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,10 +14,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import project.com.eventmaster.R;
 import project.com.eventmaster.adapter.EventAdapter;
+import project.com.eventmaster.adapter.SearchedEventAdapter;
 import project.com.eventmaster.data.model.Event;
+import project.com.eventmaster.data.repository.SearchedEventDataSource;
+import project.com.eventmaster.network.RetrofitClientInstance;
+import project.com.eventmaster.services.EventService;
+import project.com.eventmaster.utils.MainThreadExecutor;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,8 +46,12 @@ public class EventListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     //
-    private EventAdapter adapter;
+    private SearchedEventAdapter adapter;
     private EventListViewModel viewModel;
+    private View view;
+    private SearchedEventDataSource dataSource;
+    private EventService eventService;
+    private Executor executor;
 
     public EventListFragment() {
         // Required empty public constructor
@@ -78,25 +89,49 @@ public class EventListFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_list, container, false);
+        this.view = view;
+
+        executor = new MainThreadExecutor();
+
+        setupService();
+        setupRecyclerView();
+        setupDataSource("");
+
+        return view;
+    }
+
+
+    private void setupService() {
+        eventService = RetrofitClientInstance.getClient().create(EventService.class);
+    }
+
+    private void setupRecyclerView() {
+        // SETUP ADAPTER
+//         adapter = new EventAdapter(viewModel.getEvents().getValue());
+        adapter = new SearchedEventAdapter();
 
         //setup view
         RecyclerView listView = view.findViewById(R.id.list_events);
 
-        // setup view model
-        viewModel = ViewModelProviders.of(this).get(EventListViewModel.class);
-        viewModel.getEvents().observe(this, events -> {
-            adapter.setEvents(events);
-            adapter.notifyDataSetChanged();
-        });
-
-        // SETUP ADAPTER
-        adapter = new EventAdapter(viewModel.getEvents().getValue());
         listView.setAdapter(adapter);
         listView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+    }
 
-        viewModel.search();
+    private void setupDataSource(String queryString) {
+        dataSource = new SearchedEventDataSource(eventService, queryString);
 
-        return view;
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setPageSize(2)
+                .setInitialLoadSizeHint(4)
+                .setEnablePlaceholders(true)
+                .build();
+
+        PagedList<Event> list = new PagedList.Builder<>(dataSource, config)
+                .setFetchExecutor(executor)
+                .setNotifyExecutor(executor)
+                .build();
+
+        adapter.submitList(list);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

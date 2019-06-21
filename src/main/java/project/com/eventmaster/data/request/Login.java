@@ -3,7 +3,7 @@ package project.com.eventmaster.data.request;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class LoginData {
+public class Login {
 
     @SerializedName("email")
     @Expose
@@ -13,7 +13,7 @@ public class LoginData {
     @Expose
     private String password;
 
-    public LoginData(String email, String password) {
+    public Login(String email, String password) {
         this.email = email;
         this.password = password;
     }

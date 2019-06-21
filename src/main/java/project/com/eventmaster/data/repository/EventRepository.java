@@ -10,8 +10,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import project.com.eventmaster.data.model.Event;
+import project.com.eventmaster.data.model.SearchEventsResponse;
 import project.com.eventmaster.network.RetrofitClientInstance;
-import project.com.eventmaster.services.AuthService;
 import project.com.eventmaster.services.EventService;
 
 public class EventRepository {
@@ -38,18 +38,18 @@ public class EventRepository {
     // search events
     public Observable<List<Event>> search() {
         return Observable.create(emitter -> {
-            service.getEvents()
+            service.getEvents("", 1)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<List<Event>>() {
+                    .subscribe(new Observer<SearchEventsResponse>() {
                         @Override
                         public void onSubscribe(Disposable d) {
 
                         }
 
                         @Override
-                        public void onNext(List<Event> events) {
-                            emitter.onNext(events);
+                        public void onNext(SearchEventsResponse response) {
+                            emitter.onNext(response.getEvents());
                         }
 
                         @Override

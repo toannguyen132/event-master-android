@@ -2,6 +2,8 @@ package project.com.eventmaster.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -148,4 +150,16 @@ public class Event  {
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
     }
+
+    final public static DiffUtil.ItemCallback<Event> DIFF_CALLBACK = new DiffUtil.ItemCallback<Event>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Event event, @NonNull Event newEvent) {
+            return event.getId().equals(newEvent.getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Event event, @NonNull Event t1) {
+            return true;
+        }
+    };
 }

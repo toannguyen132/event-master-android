@@ -30,6 +30,7 @@ import project.com.eventmaster.services.EventService;
 import project.com.eventmaster.ui.login.LoginViewModel;
 import project.com.eventmaster.ui.login.LoginViewModelFactory;
 import project.com.eventmaster.ui.main.MainActivity;
+import project.com.eventmaster.ui.register.RegisterActivity;
 import project.com.eventmaster.utils.GlobalContext;
 import project.com.eventmaster.utils.TokenHelper;
 import retrofit2.Call;
@@ -38,8 +39,12 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
+    final static int REGISTER_REQUEST = 1;
+
     final String TAG = "LOGIN_ACTIVITY";
+
     private LoginViewModel loginViewModel;
+    private TextView textRegister;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
+
+        textRegister = findViewById(R.id.login_register);
 
         loginViewModel.getLoginFormState().observe(this, new Observer<LoginFormState>() {
             @Override
@@ -125,27 +132,35 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
+        textRegister.setOnClickListener(view -> showRegister());
     }
 
     private void updateUiWithUser(LoggedInUserView model) {
-//        String token = "token: " + model.getToken();
-//        Toast.makeText(getApplicationContext(), token, Toast.LENGTH_LONG).show();
-
         // save token
         TokenHelper.getInstance().setToken(model.getToken());
 
         /// move to another activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+//        Intent intent = new Intent(this, MainActivity.class);
+//        startActivity(intent);
 
-//        setResult(Activity.RESULT_OK);
-
-        //Complete and destroy login activity once successful
-//        finish();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showRegister() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        startActivityForResult(intent, REGISTER_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTER_REQUEST) {
+
+        }
     }
 }

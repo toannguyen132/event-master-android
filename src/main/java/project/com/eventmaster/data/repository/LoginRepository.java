@@ -7,11 +7,12 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import project.com.eventmaster.data.LoginDataSource;
 import project.com.eventmaster.data.Result;
 import project.com.eventmaster.data.model.AuthResponse;
 import project.com.eventmaster.data.model.CurrentUser;
-import project.com.eventmaster.data.request.LoginData;
+import project.com.eventmaster.data.model.RegisterRequest;
+import project.com.eventmaster.data.model.RegisterResponse;
+import project.com.eventmaster.data.request.Login;
 import project.com.eventmaster.network.RetrofitClientInstance;
 import project.com.eventmaster.services.AuthService;
 import project.com.eventmaster.utils.TokenHelper;
@@ -23,9 +24,6 @@ import project.com.eventmaster.utils.TokenHelper;
 public class LoginRepository {
 
     private static volatile LoginRepository instance;
-
-    OnCompletedListener completedListener;
-    OnFailuedListener failuedListener;
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
@@ -66,7 +64,7 @@ public class LoginRepository {
     public Observable<AuthResponse> login(String email, String password) {
         AuthService service = RetrofitClientInstance.getClient().create(AuthService.class);
 
-        return service.login(new LoginData(email, password))
+        return service.login(new Login(email, password))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -118,21 +116,17 @@ public class LoginRepository {
 //                .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public LoginRepository setOnCompletedListener(OnCompletedListener listener) {
-        this.completedListener = listener;
-        return this;
-    }
-    public LoginRepository setOnFailedListener(OnFailuedListener listener) {
-        this.failuedListener = listener;
-        return this;
-    }
 
-    public interface OnCompletedListener<T> {
-        void onCompleted(Result.Success<T> resp);
-    }
+    /**
+     * perform action register
+     * @param request
+     * @return
+     */
+    public Observable<RegisterResponse> register(RegisterRequest request) {
+        AuthService service = RetrofitClientInstance.getClient().create(AuthService.class);
 
-    public interface OnFailuedListener {
-        void onFailed(String errorMessage);
+        return service.register(request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
-
 }

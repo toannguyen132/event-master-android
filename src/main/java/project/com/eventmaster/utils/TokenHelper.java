@@ -32,4 +32,13 @@ public class TokenHelper {
         editor.putString(TOKEN_KEY, token);
         editor.commit();
     }
+
+    public void removeToken() {
+        Context context = GlobalContext.getInstance().getContext();
+        SharedPreferences pref = context.getSharedPreferences(PREF, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove(TOKEN_KEY);
+        editor.commit();
+    }
 }
