@@ -47,6 +47,6 @@ public class SearchedEventViewHolder extends RecyclerView.ViewHolder {
         }
 
         /** open detail view **/
-        view.setOnClickListener(view1 -> ActivityHelper.getInstance().openEventDetail(view1.getContext(), event));
+        view.setOnClickListener(view1 -> ActivityHelper.getInstance().openEventDetail(view1.getContext(), event.getId()));
     }
 }

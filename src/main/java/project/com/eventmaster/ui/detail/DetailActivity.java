@@ -7,24 +7,32 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import project.com.eventmaster.R;
+import project.com.eventmaster.data.model.Coordinate;
+import project.com.eventmaster.data.model.CurrentUser;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.utils.DisplayHelper;
+import project.com.eventmaster.utils.SharedPreferencesHelper;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     DetailViewModel viewModel;
     ImageView viewImage;
     TextView viewTitle, viewDesc, viewLocation, viewDate;
+    private GoogleMap gmap;
 
     Context context;
 
@@ -46,10 +54,14 @@ public class DetailActivity extends AppCompatActivity {
         viewLocation = findViewById(R.id.detail_event_location);
         viewDate = findViewById(R.id.detail_event_date);
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.g_map);
+
         // retrieve data
         Gson gson = new Gson();
         String eventJson = getIntent().getStringExtra("event");
         Event event = gson.fromJson(eventJson, Event.class);
+        String eventId = getIntent().getStringExtra("eventId");
 
         // get view model
         viewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
@@ -68,14 +80,24 @@ public class DetailActivity extends AppCompatActivity {
                         .fit()
                         .into(viewImage);
                 viewTitle.setText(event.getName());
+                viewDate.setText( "Date: " + DisplayHelper.getInstance().dateFormat(event.getStartDate()));
+                viewLocation.setText("Location" + event.getLocation());
                 viewDesc.setText(event.getDescription());
-                viewDate.setText(DisplayHelper.getInstance().dateFormat(event.getStartDate()));
-                viewLocation.setText(event.getLocation());
+
+                // setup coordinate
+                Coordinate coordinate = event.getCoordinate();
+                if (coordinate != null) {
+                    setupMap(coordinate.getLat(), coordinate.getLng(), event.getName());
+                }
             }
         });
 
-        // set default event
-        viewModel.setEvent(event);
+
+        // init map
+        mapFragment.getMapAsync(this);
+
+        // fetch event
+        viewModel.fetchEvent(eventId);
     }
 
     @Override
@@ -85,5 +107,28 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Update location
+     * @param lat
+     * @param lng
+     */
+    private void setupMap(double lat, double lng, String title) {
+        LatLng loc = new LatLng(lat, lng);
+        gmap.setMinZoomPreference(14);
+        // create marker
+        gmap.addMarker(new MarkerOptions().position(loc).title(title));
+        // move map
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        gmap = googleMap;
+        gmap.setMinZoomPreference(12);
+
+        LatLng ny = new LatLng(40.7143528, -74.0059731);
+        gmap.moveCamera(CameraUpdateFactory.newLatLng(ny));
     }
 }

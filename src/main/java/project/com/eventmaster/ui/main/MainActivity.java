@@ -13,6 +13,7 @@ import project.com.eventmaster.R;
 import project.com.eventmaster.ui.fragments.MenuFragment;
 import project.com.eventmaster.ui.fragments.createevent.CreateEventFragment;
 import project.com.eventmaster.ui.fragments.eventlist.EventListFragment;
+import project.com.eventmaster.ui.fragments.notifications.NotificationsFragment;
 import project.com.eventmaster.ui.login.LoginActivity;
 import project.com.eventmaster.utils.TokenHelper;
 
@@ -23,11 +24,13 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
 
     EventListFragment eventListFragment;
     CreateEventFragment createEventFragment;
+    NotificationsFragment notificationsFragment;
     MenuFragment menuFragment;
 
     private final static int SCREEN_HOME = 0;
     private final static int SCREEN_CREATE = 1;
     private final static int SCREEN_PROFILE = 2;
+    private final static int SCREEN_NOTIFICATION = 3;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = item -> {
@@ -40,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
                         return true;
                     case R.id.navigation_menu:
                         openScreen(SCREEN_PROFILE);
+                        return true;
+                    case R.id.navigation_notification:
+                        openScreen(SCREEN_NOTIFICATION);
                         return true;
                 }
                 return false;
@@ -66,6 +72,10 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
             case R.id.navigation_menu:
                 openScreen(SCREEN_PROFILE);
                 break;
+            case R.id.navigation_notification:
+                openScreen(SCREEN_NOTIFICATION);
+                break;
+
         }
     }
 
@@ -85,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
             menuFragment = MenuFragment.newInstance();
             menuFragment.setOnLogoutListener(this);
         }
+        if (notificationsFragment == null){
+            notificationsFragment = NotificationsFragment.newInstance();
+        }
     }
 
     private void openScreen(int screen) {
@@ -94,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
             openCreateScreen();
         } else if (screen == SCREEN_PROFILE) {
             openProfileScreen();
+        } else if (screen == SCREEN_NOTIFICATION) {
+            openNotificationScreen();
         }
     }
 
@@ -112,13 +127,16 @@ public class MainActivity extends AppCompatActivity implements EventListFragment
                 .replace(R.id.fragment_events, menuFragment).commit();
     }
 
+    private void openNotificationScreen() {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_events, notificationsFragment).commit();
+    }
+
     @Override
     public void onLogout() {
         TokenHelper.getInstance().removeToken();
         setResult(Activity.RESULT_OK);
         finish();
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        startActivityForResult(intent, LOGIN_REQUEST);
     }
 
     @Override

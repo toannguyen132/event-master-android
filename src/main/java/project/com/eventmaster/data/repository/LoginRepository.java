@@ -79,7 +79,6 @@ public class LoginRepository {
 
         final AuthService service = RetrofitClientInstance.getClient().create(AuthService.class);
 
-
         return Observable.create(new ObservableOnSubscribe<CurrentUser>() {
             @Override
             public void subscribe(final ObservableEmitter<CurrentUser> emitter) throws Exception {

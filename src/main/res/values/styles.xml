@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
     </style>
 
     <!-- splash screen -->
@@ -14,6 +15,13 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
+    </style>
+
+    <style name="AppTheme.Widget"/>
+
+    <style name="AppTheme.Widget.TextView" parent="android:Widget.Holo.Light.TextView">
+        <item name="fontPath">fonts/Lato-Light.ttf</item>
     </style>
 
 </resources>

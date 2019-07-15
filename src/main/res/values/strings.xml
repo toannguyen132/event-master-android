@@ -13,6 +13,7 @@
     <string name="title_home">Home</string>
     <string name="title_create">Create</string>
     <string name="title_profile">Profile</string>
+    <string name="title_notification">Notifications</string>
 
     <string name="event_default_name">Defailt Event Name</string>
     <string name="event_default_desc">Defailt Event Desc</string>
@@ -24,4 +25,9 @@
     <string name="register_name">Name</string>
     <string name="promt_password_confirm">Password Confirmation</string>
     <string name="action_register">Register</string>
+
+    <string name="notification_channel">notification</string>
+    <string name="notification_name">Notification Name</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

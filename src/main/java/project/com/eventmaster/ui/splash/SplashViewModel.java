@@ -10,6 +10,7 @@ import io.reactivex.disposables.Disposable;
 import project.com.eventmaster.data.Result;
 import project.com.eventmaster.data.model.CurrentUser;
 import project.com.eventmaster.data.repository.LoginRepository;
+import project.com.eventmaster.utils.SharedPreferencesHelper;
 
 public class SplashViewModel extends ViewModel {
 
@@ -35,6 +36,7 @@ public class SplashViewModel extends ViewModel {
             @Override
             public void onNext(CurrentUser user) {
                 currentUser.setValue(user);
+                SharedPreferencesHelper.getInstance().setObject(user, SharedPreferencesHelper.KEY_CURRENT_USER);
             }
 
             @Override
@@ -47,5 +49,9 @@ public class SplashViewModel extends ViewModel {
 
             }
         });
+    }
+
+    private void attachNotification() {
+
     }
 }

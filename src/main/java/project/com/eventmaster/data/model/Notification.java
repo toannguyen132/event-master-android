@@ -7,15 +7,19 @@ public class Notification {
     @SerializedName("id")
     @Expose
     private String id;
+
     @SerializedName("type")
     @Expose
     private String type;
+
     @SerializedName("message")
     @Expose
     private String message;
+
     @SerializedName("read")
     @Expose
-    private String read;
+    private Boolean read;
+
     @SerializedName("data")
     @Expose
     private String data;
@@ -47,11 +51,11 @@ public class Notification {
         this.message = message;
     }
 
-    public String getRead() {
+    public Boolean getRead() {
         return read;
     }
 
-    public void setRead(String read) {
+    public void setRead(Boolean read) {
         this.read = read;
     }
 

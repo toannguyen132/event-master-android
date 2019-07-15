@@ -27,4 +27,11 @@ public class ActivityHelper {
         intent.putExtra("event", eventData);
         context.startActivity(intent);
     }
+
+    public void openEventDetail(Context context, String eventId) {
+        Intent intent = new Intent(context, DetailActivity.class);
+
+        intent.putExtra("eventId", eventId);
+        context.startActivity(intent);
+    }
 }

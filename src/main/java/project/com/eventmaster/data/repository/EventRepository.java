@@ -9,10 +9,12 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.SearchEventsResponse;
 import project.com.eventmaster.network.RetrofitClientInstance;
 import project.com.eventmaster.services.EventService;
+import project.com.eventmaster.utils.TokenHelper;
 
 public class EventRepository {
 
@@ -63,5 +65,18 @@ public class EventRepository {
                         }
                     });
         });
+    }
+
+    public Observable<Event> create(CreateEventRequest request) {
+        String token = TokenHelper.getInstance().getToken();
+        return service.createEvent(token, request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Event> getSingleEvent(String id) {
+        return service.getSingleEvent(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

@@ -47,6 +47,10 @@ public class Event  {
     @Expose
     private String createdAt;
 
+    @SerializedName("coordinate")
+    @Expose
+    private Coordinate coordinate;
+
     public Event(String id, String name, String description, String startDate, String endDate, String createdAt) {
         this.id = id;
         this.name = name;
@@ -149,6 +153,14 @@ public class Event  {
 
     public void setTickets(List<Ticket> tickets) {
         this.tickets = tickets;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
     final public static DiffUtil.ItemCallback<Event> DIFF_CALLBACK = new DiffUtil.ItemCallback<Event>() {
