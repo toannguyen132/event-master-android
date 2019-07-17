@@ -33,7 +33,7 @@ public class NotificationViewHolder extends RecyclerView.ViewHolder implements U
         ButterKnife.bind(this, view);
 
         userResponsitory = UserRepository.getInstance();
-        userResponsitory.setReadNotificationListender(this);
+        userResponsitory.setReadNotificationListener(this);
     }
 
     public static NotificationViewHolder create(ViewGroup parent) {

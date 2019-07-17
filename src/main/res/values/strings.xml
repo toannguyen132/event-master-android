@@ -30,4 +30,6 @@
     <string name="notification_name">Notification Name</string>
     <string name="internal_storage">Internal storage</string>
     <string name="title_activity_maps">Map</string>
+
+    <string name="header_my_events">My Events</string>
 </resources>

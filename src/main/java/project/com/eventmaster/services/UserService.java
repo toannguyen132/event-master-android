@@ -1,9 +1,12 @@
 package project.com.eventmaster.services;
 
+import java.util.List;
+
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import project.com.eventmaster.data.model.AuthResponse;
 import project.com.eventmaster.data.model.CurrentUser;
+import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.request.Login;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -19,4 +22,7 @@ public interface UserService {
 
     @PUT("/api/user/notification/{id}")
     Completable readNotification(@Header("x-access-token") String token, @Path("id") String id);
+
+    @GET("/api/user/my-events")
+    Observable<List<Event>> fetchMyEvents(@Header("x-access-token") String token);
 }

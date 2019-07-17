@@ -1,6 +1,7 @@
 package project.com.eventmaster.ui.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import project.com.eventmaster.R;
 import project.com.eventmaster.adapter.MenuAdapter;
+import project.com.eventmaster.ui.myevents.MyEventActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +22,8 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnMenuSelected
 
     View view;
     OnLogoutListener listener;
+    static final int CODE_MY_EVENTS = 1;
+
 
     public MenuFragment() {
         // Required empty public constructor
@@ -66,8 +70,19 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnMenuSelected
                 }
 
             break;
+            case MenuAdapter.MENU_EVENTS:
+                openMyEvents();
+                break;
         }
     }
+
+    private void openMyEvents() {
+        Intent intent = new Intent(this.getActivity(), MyEventActivity.class);
+        startActivityForResult(intent, CODE_MY_EVENTS);
+    }
+
+
+    /** log out **/
 
     public void setOnLogoutListener(OnLogoutListener listener) {
         this.listener = listener;

@@ -46,7 +46,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         bar.setDisplayHomeAsUpEnabled(true);
         bar.setDisplayShowHomeEnabled(true);
 
-
         // setup resource
         viewImage = findViewById(R.id.detail_event_image);
         viewTitle = findViewById(R.id.detail_event_name);
@@ -69,26 +68,24 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         context = this;
 
         // bind datar
-        viewModel.getEvent().observe(this, new Observer<Event>() {
-            @Override
-            public void onChanged(@Nullable Event event) {
-                String imageUri = DisplayHelper.getInstance().imageUri(event.getImage().getFilename());
-                Picasso.get()
-                        .load(imageUri)
-                        .placeholder(R.drawable.splash)
-                        .centerCrop()
-                        .fit()
-                        .into(viewImage);
-                viewTitle.setText(event.getName());
-                viewDate.setText( "Date: " + DisplayHelper.getInstance().dateFormat(event.getStartDate()));
-                viewLocation.setText("Location" + event.getLocation());
-                viewDesc.setText(event.getDescription());
+        viewModel.getEvent().observe(this, event1 -> {
+            String imageUri = DisplayHelper.getInstance().imageUri(event1.getImage().getFilename());
+            Picasso.get()
+                    .load(imageUri)
+                    .placeholder(R.drawable.splash)
+                    .centerCrop()
+                    .fit()
+                    .into(viewImage);
+            viewTitle.setText(event1.getName());
+            viewDate.setText( "Date: " + DisplayHelper.getInstance().dateFormat(event1.getStartDate()));
+            viewLocation.setText("Location" + event1.getLocation());
+            viewDesc.setText(event1.getDescription());
+            this.setTitle(event1.getName());
 
-                // setup coordinate
-                Coordinate coordinate = event.getCoordinate();
-                if (coordinate != null) {
-                    setupMap(coordinate.getLat(), coordinate.getLng(), event.getName());
-                }
+            // setup coordinate
+            Coordinate coordinate = event1.getCoordinate();
+            if (coordinate != null) {
+                setupMap(coordinate.getLat(), coordinate.getLng(), event1.getName());
             }
         });
 
