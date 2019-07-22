@@ -3,11 +3,14 @@ package project.com.eventmaster.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Ticket {
 
     @SerializedName("price")
     @Expose
-    private String price;
+    private Double price;
+
     @SerializedName("number")
     @Expose
     private String number;
@@ -53,11 +56,25 @@ public class Ticket {
         this.name = name;
     }
 
-    public String getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public static String getPriceString(List<Ticket> tickets) {
+        if ( tickets.size() == 1 ) {
+            return "$" + tickets.get(0);
+        }
+        double min = 999999999;
+        double max = 0;
+        for (Ticket ticket : tickets) {
+            if (min > ticket.price) min = ticket.price;
+            if (max < ticket.price) max = ticket.price;
+        }
+
+        return "$" + min + " - " + "$" + max;
     }
 }

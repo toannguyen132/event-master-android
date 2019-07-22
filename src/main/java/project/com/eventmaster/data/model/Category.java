@@ -15,6 +15,10 @@ public class Category {
     @Expose
     private String slug;
 
+    @SerializedName("subscribe")
+    @Expose
+    private boolean subscribe;
+
     public String getId() {
         return id;
     }
@@ -37,5 +41,13 @@ public class Category {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public boolean isSubscribe() {
+        return subscribe;
+    }
+
+    public void setSubscribe(boolean subscribe) {
+        this.subscribe = subscribe;
     }
 }

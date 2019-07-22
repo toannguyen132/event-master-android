@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import project.com.eventmaster.utils.SharedPreferencesHelper;
+
 /**
  * Data class that captures user information for logged in users retrieved from LoginRepository
  */
@@ -15,6 +17,9 @@ public class CurrentUser {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("address")
+    @Expose
+    private String address;
     @SerializedName("email")
     @Expose
     private String email;
@@ -63,5 +68,17 @@ public class CurrentUser {
 
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public static CurrentUser getFromCache() {
+        return SharedPreferencesHelper.getInstance().getObject(SharedPreferencesHelper.KEY_CURRENT_USER, CurrentUser.class);
     }
 }

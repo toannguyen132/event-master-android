@@ -14,6 +14,8 @@ import android.widget.Toast;
 import project.com.eventmaster.R;
 import project.com.eventmaster.adapter.MenuAdapter;
 import project.com.eventmaster.ui.myevents.MyEventActivity;
+import project.com.eventmaster.ui.profile.ProfileActivity;
+import project.com.eventmaster.ui.subscriptions.SubscriptionsActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,8 +72,16 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnMenuSelected
                 }
 
             break;
+            case MenuAdapter.MENU_PROFILE:
+                openProfile();
+                break;
+
             case MenuAdapter.MENU_EVENTS:
                 openMyEvents();
+                break;
+
+            case MenuAdapter.MENU_SUBSCRIBTIONS:
+                openSubscriptions();
                 break;
         }
     }
@@ -79,6 +89,16 @@ public class MenuFragment extends Fragment implements MenuAdapter.OnMenuSelected
     private void openMyEvents() {
         Intent intent = new Intent(this.getActivity(), MyEventActivity.class);
         startActivityForResult(intent, CODE_MY_EVENTS);
+    }
+
+    private void openProfile() {
+        Intent intent = new Intent(this.getActivity(), ProfileActivity.class);
+        startActivity(intent);
+    }
+
+    private void openSubscriptions() {
+        Intent intent = new Intent(this.getActivity(), SubscriptionsActivity.class);
+        startActivity(intent);
     }
 
 

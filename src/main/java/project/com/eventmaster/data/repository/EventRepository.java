@@ -9,6 +9,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import project.com.eventmaster.data.model.Category;
 import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.SearchEventsResponse;
@@ -78,5 +79,43 @@ public class EventRepository {
         return service.getSingleEvent(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public void getCategories(FetchCategoryListener onResponse) {
+        String token = TokenHelper.getInstance().getToken();
+
+        service.fetchCategories(token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Category>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Category> events) {
+                        if (onResponse != null) {
+                            onResponse.onFetchCategorySuccess(events);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (onResponse != null) {
+                            onResponse.onFetchCategoryFailed(new Exception(e));
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    public interface FetchCategoryListener{
+        void onFetchCategorySuccess(List<Category> categories);
+        void onFetchCategoryFailed(Exception e);
     }
 }

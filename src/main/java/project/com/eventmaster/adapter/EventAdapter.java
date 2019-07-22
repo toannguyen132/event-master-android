@@ -14,9 +14,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import project.com.eventmaster.R;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.Image;
+import project.com.eventmaster.data.model.Ticket;
 import project.com.eventmaster.utils.ActivityHelper;
 import project.com.eventmaster.utils.DisplayHelper;
 
@@ -45,15 +48,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         Event event = events.get(i);
-        Image image = event.getImages().get(0);
-        viewHolder.textEventName.setText(event.getName());
-        if (image != null) {
-            Picasso.get().load(DisplayHelper.getInstance().imageUri(image.getFilename())).into(viewHolder.imgThumb);
-        }
-
-        /** open detail view **/
-        View view = viewHolder.view;
-        view.setOnClickListener(view1 -> ActivityHelper.getInstance().openEventDetail(view1.getContext(), event));
+        viewHolder.bind(event);
     }
 
     @Override
@@ -66,8 +61,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView textEventName;
-        private ImageView imgThumb;
+        @BindView(R.id.txt_event_name) TextView textEventName;
+        @BindView(R.id.txt_event_location) TextView textEventLocation;
+        @BindView(R.id.img_event_thumb) ImageView imgThumb;
+        @BindView(R.id.txt_event_month) TextView textEventMonth;
+        @BindView(R.id.txt_event_day) TextView textEventDay;
+        @BindView(R.id.txt_event_prices) TextView textEventPrices;
+
         private Context context;
         private View view;
 
@@ -76,9 +76,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder> 
             context = itemView.getContext();
 
             view = itemView;
-            textEventName = itemView.findViewById(R.id.txt_event_name);
-            imgThumb = itemView.findViewById(R.id.img_event_thumb);
-            imgThumb.setImageResource(R.drawable.splash);
+            ButterKnife.bind(view);
+        }
+
+        public void bind(Event event) {
+            DisplayHelper helper = DisplayHelper.getInstance();
+            Image image = event.getImages().get(0);
+            textEventName.setText(event.getName());
+            textEventLocation.setText(event.getLocation());
+            textEventMonth.setText(helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_MONTH));
+            textEventDay.setText(helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_DAY));
+            textEventPrices.setText(Ticket.getPriceString(event.getTickets()));
+
+            if (image != null) {
+                Picasso.get().load(DisplayHelper.getInstance().imageUri(image.getFilename())).into(imgThumb);
+            }
+
+            /** open detail view **/
+            view.setOnClickListener(view1 -> ActivityHelper.getInstance().openEventDetail(view1.getContext(), event));
         }
     }
 }

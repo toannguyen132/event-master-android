@@ -106,6 +106,61 @@ public class UserRepository {
                 });
     }
 
+    public void subscribeCategory(String id, OnSubscribeCategory listener) {
+        final String token = TokenHelper.getInstance().getToken();
+        userService.subscribe(token, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (listener != null) {
+                            listener.onSubscribeCategorySuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (listener != null) {
+                            listener.onSubscribeCategoryFailed(new Exception(e));
+                        }
+                    }
+                });
+    }
+
+    public void unSubscribeCategory(String id, OnUnsubscribeCategory listener) {
+        final String token = TokenHelper.getInstance().getToken();
+        userService.unsubscribe(token, id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (listener != null) {
+                            listener.onUnsubscribeCategorySuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (listener != null) {
+                            listener.onUnsubscribeCategoryFailed(new Exception(e));
+                        }
+                    }
+                });
+
+    }
+
     public interface OnReadNotificationResponse {
         void onReadNotificationSuccess();
         void onReadNotificationFailed(Exception e);
@@ -114,5 +169,15 @@ public class UserRepository {
     public interface OnFetchMyEventsResponse {
         void OnFetchMyEventsSuccess(List<Event> events);
         void OnFetchMyEventsFailed(Exception e);
+    }
+
+    public interface OnSubscribeCategory {
+        void onSubscribeCategorySuccess();
+        void onSubscribeCategoryFailed(Exception e);
+    }
+
+    public interface OnUnsubscribeCategory{
+        void onUnsubscribeCategorySuccess();
+        void onUnsubscribeCategoryFailed(Exception e);
     }
 }

@@ -3,6 +3,7 @@ package project.com.eventmaster.services;
 import java.util.List;
 
 import io.reactivex.Observable;
+import project.com.eventmaster.data.model.Category;
 import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.SearchEventsResponse;
@@ -23,5 +24,8 @@ public interface EventService {
 
     @POST("/api/event")
     Observable<Event> createEvent(@Header("x-access-token") String token, @Body CreateEventRequest request);
+
+    @GET("/api/event/category")
+    Observable<List<Category>> fetchCategories(@Header("x-access-token") String token);
 
 }
