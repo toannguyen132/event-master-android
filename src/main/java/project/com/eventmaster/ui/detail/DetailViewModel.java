@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import project.com.eventmaster.data.model.Event;
+import project.com.eventmaster.data.model.PaymentRequest;
 import project.com.eventmaster.data.repository.EventRepository;
 
 public class DetailViewModel extends ViewModel {
@@ -53,5 +54,9 @@ public class DetailViewModel extends ViewModel {
 
             }
         });
+    }
+
+    public void checkout(PaymentRequest request, EventRepository.CreatePaymentListener listener) {
+        eventRepository.createPayment(request, listener);
     }
 }

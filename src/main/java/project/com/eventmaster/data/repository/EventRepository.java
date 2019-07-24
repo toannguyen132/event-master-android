@@ -2,9 +2,8 @@ package project.com.eventmaster.data.repository;
 
 import java.util.List;
 
+import io.reactivex.CompletableObserver;
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -12,9 +11,11 @@ import io.reactivex.schedulers.Schedulers;
 import project.com.eventmaster.data.model.Category;
 import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.Event;
+import project.com.eventmaster.data.model.PaymentRequest;
 import project.com.eventmaster.data.model.SearchEventsResponse;
 import project.com.eventmaster.network.RetrofitClientInstance;
 import project.com.eventmaster.services.EventService;
+import project.com.eventmaster.services.PaymentService;
 import project.com.eventmaster.utils.TokenHelper;
 
 public class EventRepository {
@@ -22,12 +23,14 @@ public class EventRepository {
     List<Event> events;
 
     private EventService service;
+    private PaymentService paymentService;
 
     // singleton
     static EventRepository instance;
 
     public EventRepository() {
         service = RetrofitClientInstance.getClient().create(EventService.class);
+        paymentService = RetrofitClientInstance.getClient().create(PaymentService.class);
     }
 
     static public EventRepository getInstance() {
@@ -114,8 +117,44 @@ public class EventRepository {
                 });
     }
 
+    /**
+     * payment
+     */
+    public void createPayment(PaymentRequest request, CreatePaymentListener listener) {
+        String token = TokenHelper.getInstance().getToken();
+
+        paymentService.createPayment(token, request)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (listener != null) {
+                            listener.onCreatePaymentSuccess();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (listener != null) {
+                            listener.onCreatePaymentFailed(new Exception(e));
+                        }
+                    }
+                });
+    }
+
     public interface FetchCategoryListener{
         void onFetchCategorySuccess(List<Category> categories);
         void onFetchCategoryFailed(Exception e);
+    }
+
+    public interface CreatePaymentListener{
+        void onCreatePaymentSuccess();
+        void onCreatePaymentFailed(Exception e);
     }
 }

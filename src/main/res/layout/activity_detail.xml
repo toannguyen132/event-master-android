@@ -23,76 +23,141 @@
                     android:id="@+id/detail_event_image"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginBottom="24dp"
                     android:scaleType="centerCrop"
-                    app:layout_constraintBottom_toTopOf="@+id/detail_event_name"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/splash" />
 
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/contain_right"
+                    android:layout_width="70dp"
+                    android:layout_height="120dp"
+                    android:layout_marginEnd="6dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_event_image">
+
+                    <TextView
+                        android:id="@+id/detail_event_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="JAN"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#7E2121"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/detail_event_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="31"
+                        android:textAlignment="center"
+                        android:textColor="#FD000000"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/detail_event_month" />
+
+                    <TextView
+                        android:id="@+id/detail_event_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="5dp"
+                        android:text="9:00 AM"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/detail_event_day" />
+                </android.support.constraint.ConstraintLayout>
+
                 <TextView
                     android:id="@+id/detail_event_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/event_default_name"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textAllCaps="true"
+                    android:textColor="#070303"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toStartOf="@id/contain_right"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/detail_event_image" />
 
                 <TextView
                     android:id="@+id/detail_event_location"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="@string/event_default_date"
-                    app:layout_constraintBottom_toTopOf="@+id/detail_event_desc"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
+                    android:text="location"
+                    app:layout_constraintEnd_toStartOf="@id/contain_right"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_event_name"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintTop_toBottomOf="@+id/detail_event_name" />
 
                 <TextView
-                    android:id="@+id/detail_event_desc"
-                    android:layout_width="match_parent"
+                    android:id="@+id/detail_event_prices"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/event_default_desc"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="prices"
+                    app:layout_constraintEnd_toStartOf="@+id/contain_right"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/detail_event_location" />
 
                 <TextView
-                    android:id="@+id/detail_event_date"
-                    android:layout_width="match_parent"
+                    android:id="@+id/detail_event_desc"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:text="@string/event_default_date"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/event_default_desc"
+                    app:layout_constraintEnd_toStartOf="@+id/contain_right"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_event_desc" />
+                    app:layout_constraintTop_toBottomOf="@+id/detail_event_prices" />
 
                 <fragment
                     android:id="@+id/g_map"
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_event_buy" />
+
+                <Button
+                    android:id="@+id/detail_event_buy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Buy Ticket"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_event_date" />
+                    app:layout_constraintTop_toBottomOf="@+id/detail_event_desc" />
             </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>

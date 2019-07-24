@@ -89,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="JAN"
                 android:textAlignment="center"
+                android:textAllCaps="true"
                 android:textColor="#B83A3A"
                 android:textSize="18sp"
                 android:textStyle="bold"

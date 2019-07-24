@@ -51,6 +51,9 @@ dependencies {
     implementation 'com.jakewharton:butterknife:9.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
+
+    implementation 'com.braintreepayments.api:braintree:2.22.0'
+    implementation 'com.braintreepayments.api:drop-in:3.7.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
