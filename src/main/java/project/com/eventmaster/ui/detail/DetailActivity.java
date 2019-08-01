@@ -44,6 +44,7 @@ import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.PaymentRequest;
 import project.com.eventmaster.data.model.Ticket;
 import project.com.eventmaster.data.repository.EventRepository;
+import project.com.eventmaster.ui.dialogs.CheckoutData;
 import project.com.eventmaster.ui.dialogs.CheckoutDialog;
 import project.com.eventmaster.utils.DisplayHelper;
 import project.com.eventmaster.utils.SharedPreferencesHelper;
@@ -68,6 +69,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     Context context;
     String token;
     String eventId;
+    String ticketId;
 
     CheckoutDialog dialog;
 
@@ -102,7 +104,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private void setDialog() {
-        dialog = new CheckoutDialog(this);
+        dialog = new CheckoutDialog(this, this);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setOnCheckoutListener(this);
@@ -110,7 +112,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private void setViewModel() {
-
         // get view model
         viewModel = ViewModelProviders.of(this).get(DetailViewModel.class);
         // bind datar
@@ -170,6 +171,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         viewDay.setText( helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_DAY) );
         viewTime.setText( helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_TIME) );
 
+        // setup tickets list
+        dialog.setTickets(event.getTickets());
+
         this.setTitle(event.getName());
 
         // setup coordinate
@@ -182,8 +186,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     @Override
-    public void onCheckout() {
+    public void onCheckout(CheckoutData checkoutData) {
         token = getString(R.string.braintree_token);
+        ticketId = checkoutData.getTicket().getId();
+
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(token);
         startActivityForResult(dropInRequest.getIntent(context), BRAINTREE_REQUEST_CODE);
@@ -200,7 +206,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 Log.d(TAG, "nonce received: " + nonce);
 
                 // TODO: update ticket id and quantity
-                submitPayment(nonce, eventId, "5d158d1f6789ce40aadb9a72", 1); // static ticketid ObjectId("5d158d1f6789ce40aadb9a72")
+                submitPayment(nonce, eventId, ticketId, 1); // static ticketid ObjectId("5d158d1f6789ce40aadb9a72")
 
             } else if (resultCode == RESULT_CANCELED) {
                 // the user canceled
@@ -220,6 +226,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     private void submitPayment(String nonce, String eventId, String ticketId, int quantity) {
         PaymentRequest request = PaymentRequest.create(nonce, eventId, ticketId, quantity);
+        Log.d(TAG, "checkout ticket " + ticketId);
         viewModel.checkout(request, new EventRepository.CreatePaymentListener() {
             @Override
             public void onCreatePaymentSuccess() {
@@ -235,6 +242,5 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 dialog.dismiss();
             }
         });
-
     }
 }

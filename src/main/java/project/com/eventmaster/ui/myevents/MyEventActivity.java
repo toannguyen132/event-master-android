@@ -52,7 +52,7 @@ public class MyEventActivity extends AppCompatActivity implements UserRepository
 
     @Override
     public void OnFetchMyEventsSuccess(List<Event> events) {
-        adapter.setEvents(events);
+         adapter.setEvents(events);
         Log.d(TAG, "fetch successfully");
     }
 
