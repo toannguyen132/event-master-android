@@ -11,11 +11,13 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 import project.com.eventmaster.data.Result;
+import project.com.eventmaster.data.model.Category;
 import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.Event;
 import project.com.eventmaster.data.model.FileResponse;
@@ -30,6 +32,7 @@ public class CreateEventViewModel extends ViewModel {
     private MutableLiveData<FileResponse> fileResponse = new MutableLiveData<>();
     private MutableLiveData<Result.Error> error = new MutableLiveData<>();
     private MutableLiveData<Result.Success<Event>> createResult = new MutableLiveData<>();
+    private MutableLiveData<List<Category>> categories = new MutableLiveData<>();
 
     private CreateEventRequest eventRequest;
 
@@ -60,6 +63,10 @@ public class CreateEventViewModel extends ViewModel {
 
     public LiveData<FileResponse> getFileResponse() {
         return fileResponse;
+    }
+
+    public LiveData<List<Category>> getCategories() {
+        return categories;
     }
 
     public void uploadFile(File file, String type) {
@@ -118,6 +125,23 @@ public class CreateEventViewModel extends ViewModel {
 
                     }
                 });
+    }
+
+    /**
+     * fetch categories list
+     */
+    public void fetchCategories() {
+        eventRepository.getCategories(new EventRepository.FetchCategoryListener() {
+            @Override
+            public void onFetchCategorySuccess(List<Category> categoriesList) {
+                categories.setValue(categoriesList);
+            }
+
+            @Override
+            public void onFetchCategoryFailed(Exception e) {
+
+            }
+        });
     }
 
 }

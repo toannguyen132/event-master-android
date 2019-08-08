@@ -17,22 +17,28 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import project.com.eventmaster.R;
 import project.com.eventmaster.data.Result;
+import project.com.eventmaster.data.model.Category;
 import project.com.eventmaster.data.model.CreateEventRequest;
 import project.com.eventmaster.data.model.FileResponse;
 import project.com.eventmaster.data.repository.FileRepository;
@@ -74,9 +80,12 @@ public class CreateEventFragment extends Fragment {
     @BindView(R.id.create_event_endtime)
     EditText textEndTime;
 
-    String image;
+    @BindView(R.id.create_event_categories)
+    Spinner spinnerCategories;
 
+    String image;
     View view;
+    private String selectedCategory;
 
     public static CreateEventFragment newInstance() {
         return new CreateEventFragment();
@@ -107,6 +116,9 @@ public class CreateEventFragment extends Fragment {
         // setup view model
         mViewModel = ViewModelProviders.of(this).get(CreateEventViewModel.class);
 
+        // get categories
+        mViewModel.fetchCategories();
+
         // observe uploading
         observeUpload();
 
@@ -129,6 +141,27 @@ public class CreateEventFragment extends Fragment {
 
         DateInputMask.create(textStartDate);
         DateInputMask.create(textEndDate);
+
+    }
+
+    private void setUpSpinner(List<Category> categories){
+        List<String> values = new ArrayList<>();
+        for (Category cat : categories) {
+            values.add(cat.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, values);
+        spinnerCategories.setAdapter(adapter);
+        spinnerCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedCategory = categories.get(i).getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                selectedCategory = categories.get(0).getId();
+            }
+        });
     }
 
     private void observeUpload() {
@@ -145,6 +178,10 @@ public class CreateEventFragment extends Fragment {
 
         mViewModel.getError().observe(this, error -> {
             Toast.makeText(getContext(), error.getError().getMessage(), Toast.LENGTH_SHORT).show();
+        });
+
+        mViewModel.getCategories().observe(this, categories -> {
+            setUpSpinner(categories);
         });
     }
 
@@ -214,6 +251,7 @@ public class CreateEventFragment extends Fragment {
                         textEndTime.getText().toString()
                 )
         );
+        request.setCategory(Arrays.asList(new String[] {selectedCategory}));
 
         return request;
     }

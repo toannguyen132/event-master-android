@@ -70,6 +70,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     String token;
     String eventId;
     String ticketId;
+    int quantity;
 
     CheckoutDialog dialog;
 
@@ -135,12 +136,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
      * @param lng
      */
     private void setupMap(double lat, double lng, String title) {
-        LatLng loc = new LatLng(lat, lng);
-        gmap.setMinZoomPreference(14);
-        // create marker
-        gmap.addMarker(new MarkerOptions().position(loc).title(title));
-        // move map
-        gmap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        if (gmap != null) {
+            LatLng loc = new LatLng(lat, lng);
+            gmap.setMinZoomPreference(14);
+            // create marker
+            gmap.addMarker(new MarkerOptions().position(loc).title(title));
+            // move map
+            gmap.moveCamera(CameraUpdateFactory.newLatLng(loc));
+        }
     }
 
     @Override
@@ -164,12 +167,21 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 //        viewDate.setText( "Date: " + DisplayHelper.getInstance().dateFormat(event.getStartDate()));
         viewLocation.setText("Location" + event.getLocation());
         viewDesc.setText(event.getDescription());
-        viewPrices.setText(Ticket.getPriceString(event.getTickets()));
 
         DisplayHelper helper = DisplayHelper.getInstance();
         viewMonth.setText( helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_MONTH) );
         viewDay.setText( helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_DAY) );
         viewTime.setText( helper.dateFormat(event.getStartDate(), DisplayHelper.DISPLAY_TIME) );
+
+        if (event.getTickets().size() == 0) {
+            viewPrices.setVisibility(View.GONE);
+            btnBuy.setVisibility(View.GONE);
+        } else {
+            viewPrices.setVisibility(View.VISIBLE);
+            btnBuy.setVisibility(View.VISIBLE);
+            viewPrices.setText(Ticket.getPriceString(event.getTickets()));
+            btnBuy.setOnClickListener(this);
+        }
 
         // setup tickets list
         dialog.setTickets(event.getTickets());
@@ -182,13 +194,13 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             setupMap(coordinate.getLat(), coordinate.getLng(), event.getName());
         }
 
-        btnBuy.setOnClickListener(this);
     }
 
     @Override
     public void onCheckout(CheckoutData checkoutData) {
         token = getString(R.string.braintree_token);
         ticketId = checkoutData.getTicket().getId();
+        quantity = checkoutData.getQuantity();
 
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(token);
@@ -206,7 +218,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 Log.d(TAG, "nonce received: " + nonce);
 
                 // TODO: update ticket id and quantity
-                submitPayment(nonce, eventId, ticketId, 1); // static ticketid ObjectId("5d158d1f6789ce40aadb9a72")
+                submitPayment(nonce, eventId, ticketId, quantity); // static ticketid ObjectId("5d158d1f6789ce40aadb9a72")
 
             } else if (resultCode == RESULT_CANCELED) {
                 // the user canceled
@@ -225,7 +237,15 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     private void submitPayment(String nonce, String eventId, String ticketId, int quantity) {
-        PaymentRequest request = PaymentRequest.create(nonce, eventId, ticketId, quantity);
+        CurrentUser user = CurrentUser.getFromCache();
+        String name = "";
+        String address = "";
+        if (user != null) {
+            name = user.getName();
+            address = user.getAddress() == null ? "sample address" : user.getAddress();
+        }
+
+        PaymentRequest request = PaymentRequest.create(nonce, eventId, ticketId, quantity, name, address);
         Log.d(TAG, "checkout ticket " + ticketId);
         viewModel.checkout(request, new EventRepository.CreatePaymentListener() {
             @Override
